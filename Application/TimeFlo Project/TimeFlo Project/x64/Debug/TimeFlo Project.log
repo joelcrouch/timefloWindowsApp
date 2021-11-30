@@ -1,0 +1,8 @@
+﻿  TimeFlo Project.cpp
+C:\Users\jdanh\source\repos\TimeFlo\Application\TimeFlo Project\TimeFlo Project\TimeFlo Project.cpp(218,61): warning C4838: conversion from 'int' to 'unsigned char' requires a narrowing conversion
+C:\Users\jdanh\source\repos\TimeFlo\Application\TimeFlo Project\TimeFlo Project\TimeFlo Project.cpp(218,84): warning C4305: 'initializing': truncation from 'int' to 'unsigned char'
+C:\Users\jdanh\source\repos\TimeFlo\Application\TimeFlo Project\TimeFlo Project\TimeFlo Project.cpp(218,61): warning C4309: 'initializing': truncation of constant value
+C:\Users\jdanh\source\repos\TimeFlo\Application\TimeFlo Project\TimeFlo Project\TimeFlo Project.cpp(218,69): warning C4838: conversion from '__int64' to 'unsigned char' requires a narrowing conversion
+C:\Users\jdanh\source\repos\TimeFlo\Application\TimeFlo Project\TimeFlo Project\TimeFlo Project.cpp(218,84): warning C4305: 'initializing': truncation from '__int64' to 'unsigned char'
+C:\Users\jdanh\source\repos\TimeFlo\Application\TimeFlo Project\TimeFlo Project\TimeFlo Project.cpp(218,69): warning C4309: 'initializing': truncation of constant value
+  TimeFlo Project.vcxproj -> C:\Users\jdanh\Source\Repos\TimeFlo\Application\TimeFlo Project\x64\Debug\TimeFlo Project.exe
