@@ -2,7 +2,7 @@
 // Jordan Hyde 2021 
 // For use as turn in for fall term 2021 CS300 timeflo project assignment.
 
-
+#include "windows.h"
 #include "framework.h"
 #include "TimeFlo Project.h"
 #include "CommCtrl.h"
@@ -369,6 +369,7 @@ BOOL NotifyUser(HWND hWnd)
 	switch (BreakFlag)
 	{
 	case true://if the work period is finishing, notify the user to take a break
+		bool played =Beep(523, 500);
 		MessageBox(hWnd,  L"Your Work Period Has Completed, Take A Break!", L"Work Period Complete!", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		return true;
 	case false://otherwise, notify the user the break has finished
