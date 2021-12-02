@@ -26,6 +26,7 @@
 #define WORKBAR 1012
 #define BREAKBAR 1013
 
+
 // Global Variables:
 HINSTANCE hInst;                                // current instance
 WCHAR szTitle[MAX_LOADSTRING];                  // The title bar text
@@ -33,6 +34,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 UINT TicksRemaining = 0;						// Remaining number of 1 second timer ticks needed
 BOOL BreakFlag = false;							// flag for break period, true = break period should be set next
 BOOL PauseFlag = false; 						// flag for when the timer is paused, the timer must be killed in order to stop it from ticking
+
 // Forward declarations of functions included in this code module:
 ATOM                WindowClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -131,7 +133,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    //Start Button Contained within 
    
 	   HWND hwndStartButton = CreateWindow(L"BUTTON", L"START", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON | BS_PUSHBUTTON, 200,500,60,20,hWnd,(HMENU) START,(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),NULL);
-  
+
 
    //Pause Button Contained Within
   
@@ -166,8 +168,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	   HWND hWndBSLabelEdit = CreateWindowEx(WS_EX_CLIENTEDGE, TEXT("static"), TEXT("S"), WS_CHILD | WS_VISIBLE, 720, 140, 40, 20, hWnd, NULL, NULL, NULL);
 	   HWND hwndBreakSEdit = CreateWindowEx(0, L"EDIT", NULL, WS_CHILD | WS_VISIBLE | ES_LEFT | ES_NUMBER | WS_BORDER, 720, 160, 40, 20, hWnd, (HMENU)BREAKSEC, hInst, NULL);
    }
-	 
-
+	//Adds a text with the name Pomodoro Time at the top left corner
+   CreateWindow(TEXT("STATIC"), TEXT("POMODORO TIMER"), WS_VISIBLE | WS_CHILD, 0, 0, 150, 20,hWnd, NULL, NULL, NULL);
 
    if (!hWnd)
    {
@@ -369,7 +371,7 @@ BOOL NotifyUser(HWND hWnd)
 	switch (BreakFlag)
 	{
 	case true://if the work period is finishing, notify the user to take a break
-		bool played =Beep(523, 500);
+		//bool played =Beep(523, 500);
 		MessageBox(hWnd,  L"Your Work Period Has Completed, Take A Break!", L"Work Period Complete!", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		return true;
 	case false://otherwise, notify the user the break has finished
