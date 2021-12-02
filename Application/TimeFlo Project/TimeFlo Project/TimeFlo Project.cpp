@@ -369,10 +369,11 @@ BOOL NotifyUser(HWND hWnd)
 	switch (BreakFlag)
 	{
 	case true://if the work period is finishing, notify the user to take a break
-		bool played =Beep(523, 500);
+		Beep(523, 500);
 		MessageBox(hWnd,  L"Your Work Period Has Completed, Take A Break!", L"Work Period Complete!", MB_OK | MB_SETFOREGROUND | MB_ICONSTOP);
 		return true;
 	case false://otherwise, notify the user the break has finished
+		Beep(523, 500);
 		int query = MessageBox(hWnd,  L"Your Break Period Has Completed, Would You Like To Go Again?", L"Break Period Complete!", MB_YESNO | MB_SETFOREGROUND | MB_ICONSTOP);
 		switch (query)//return based on the user's selection in the message box
 		{ //the wndproc function still decides whether this means a new timer value is set or not.
