@@ -25,6 +25,7 @@
 #define TIMER 1011
 #define WORKBAR 1012
 #define BREAKBAR 1013
+#define TUTORIAL 1014
 
 
 // Global Variables:
@@ -171,6 +172,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	//Adds a text with the name Pomodoro Time at the top left corner
    CreateWindow(TEXT("STATIC"), TEXT("POMODORO TIMER"), WS_VISIBLE | WS_CHILD, 0, 0, 150, 20,hWnd, NULL, NULL, NULL);
 
+   //Adds a button to display a quick tutorial on how to use the program
+   CreateWindow(TEXT("BUTTON"), TEXT("HOW TO USE"), WS_CHILD| WS_VISIBLE, 160, 0, 160, 20, hWnd, (HMENU)TUTORIAL, NULL, NULL);
+
    if (!hWnd)
    {
       return FALSE;
@@ -258,6 +262,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             case IDM_EXIT:
                 DestroyWindow(hWnd);
                 break;
+			case TUTORIAL:
+				MessageBox(hWnd, (LPCWSTR)L"H: hours M: minutes S: seconds\nSimply type the desired times into the input boxes under the H,M,S labels and press START!\nSimply press PAUSE during a session and resume anytime by pressing START.", (LPCWSTR)L"HOW TO USE" ,MB_ICONINFORMATION);
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
