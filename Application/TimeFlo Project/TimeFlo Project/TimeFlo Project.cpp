@@ -264,6 +264,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 break;
 			case TUTORIAL:
 				MessageBox(hWnd, (LPCWSTR)L"H: hours M: minutes S: seconds\nSimply type the desired times into the input boxes under the H,M,S labels and press START!\nSimply press PAUSE during a session and resume anytime by pressing START.", (LPCWSTR)L"HOW TO USE" ,MB_ICONINFORMATION);
+				break;
             default:
                 return DefWindowProc(hWnd, message, wParam, lParam);
             }
