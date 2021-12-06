@@ -9,6 +9,7 @@
 #include "Resource.h"
 #pragma comment(lib, "comctl32.lib")
 #include "Winuser.h"
+#include <ctime>
 
 //IDs
 #define MAX_LOADSTRING 100
@@ -26,6 +27,7 @@
 #define WORKBAR 1012
 #define BREAKBAR 1013
 #define TUTORIAL 1014
+#define CLOCK 1015
 
 
 // Global Variables:
@@ -174,6 +176,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    //Adds a button to display a quick tutorial on how to use the program
    CreateWindow(TEXT("BUTTON"), TEXT("HOW TO USE"), WS_CHILD| WS_VISIBLE, 160, 0, 160, 20, hWnd, (HMENU)TUTORIAL, NULL, NULL);
+
+   CreateWindow(TEXT("STATIC"), TEXT("00:00:00"), SS_CENTER | WS_CHILD | WS_VISIBLE, 450, 250, 100, 20, hWnd, (HMENU)CLOCK, NULL, NULL);
 
    if (!hWnd)
    {
@@ -344,6 +348,27 @@ VOID TickHandler(HWND hWnd)
 {
 	//decrease the number of remaining ticks
 	TicksRemaining--;
+	//update the clock timer
+	UINT MinutesRemaining = (TicksRemaining / 60);
+	UINT HoursRemaining = (MinutesRemaining / 60);
+	tm* time = new tm();
+	time->tm_hour = HoursRemaining;
+	time->tm_min = MinutesRemaining % 60;
+	time->tm_sec = TicksRemaining % 60;
+	size_t strsize = 40;
+	char* ClockString = new char[strsize];
+	std::strftime(ClockString, strsize, "%T", time);
+	wchar_t* wClockString = new wchar_t[strsize];
+	mbstowcs_s(NULL, wClockString, strsize, ClockString, strsize);
+
+	SetWindowText(GetDlgItem(hWnd, CLOCK), (LPCWSTR)wClockString);
+
+	
+	//SetWindowText(GetDlgItem(hWnd, CLOCK), );
+
+
+	//StringCbPrintf(ClockText, HoursRemaining + " : " + MinutesRemaining % 60 + " : " TicksRemaining % 60 );
+	
 	switch (BreakFlag)
 	{
 	case true: //if the work period is running, change the work bar
