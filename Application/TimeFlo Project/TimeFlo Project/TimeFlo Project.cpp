@@ -48,6 +48,7 @@ BOOL				TimerStart(HWND hWnd);
 VOID 				TickHandler(HWND hWnd);
 BOOL				NotifyUser(HWND hWnd);
 BOOL                LoadFile(HWND hWnd);
+BOOL                WriteFile(HWND hWnd);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -280,7 +281,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY: // case for when the program is exited unexpectedly, or the X button is clicked
-		// save settings here maybe?
+		
+		if (!WriteFile(hWnd)) // saves settings to file
+		{
+			// create a popup if this fails
+		}
         PostQuitMessage(0);
         break;
     default:
@@ -447,6 +452,36 @@ BOOL LoadFile(HWND hWnd)
 	SetDlgItemInt(hWnd, BREAKSEC, bTime[2], false);
 
 	input.close();
+
+	return true;
+}
+
+//Function: WriteFile(HWND)
+//
+//
+//Purpose: When program is terminated, save timer settings to 'settings.txt'
+BOOL WriteFile(HWND hWnd)
+{
+	UINT wTime[3];
+	UINT bTime[3];
+	std::ofstream output;
+
+	output.open(fileName);
+
+	if (!output)
+		return false;
+
+	wTime[0] = GetDlgItemInt(hWnd, WORKHRS, NULL, false);
+	wTime[1] = GetDlgItemInt(hWnd, WORKMIN, NULL, false);
+	wTime[2] = GetDlgItemInt(hWnd, WORKSEC, NULL, false);
+	bTime[0] = GetDlgItemInt(hWnd, BREAKHRS, NULL, false);
+	bTime[1] = GetDlgItemInt(hWnd, BREAKMIN, NULL, false);
+	bTime[2] = GetDlgItemInt(hWnd, BREAKSEC, NULL, false);
+
+	output << wTime[0] << "|" << wTime[1] << "|" << wTime[2] << "|"
+		   << bTime[0] << "|" << bTime[1] << "|" << bTime[2];
+
+	output.close();
 
 	return true;
 }
