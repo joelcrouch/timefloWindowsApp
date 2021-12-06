@@ -188,7 +188,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    }
    if(!LoadFile(hWnd))
    { 
-	   // create a popup that lets the user know the file cannot be read
+	   // create a popup to signal failed load
    }
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
@@ -423,13 +423,21 @@ BOOL NotifyUser(HWND hWnd)
 //         otherwise, set values to 0.
 BOOL LoadFile(HWND hWnd)
 {
-	UINT wTime[3];
-	UINT bTime[3]; 
+	UINT wTime[3] {0,0,0};
+	UINT bTime[3] {0,0,0};
 
 	std::ifstream input;
 	input.open(fileName);
 	if (!input)
+	{
+		SetDlgItemInt(hWnd, WORKHRS, wTime[0], false);
+		SetDlgItemInt(hWnd, WORKMIN, wTime[1], false);
+		SetDlgItemInt(hWnd, WORKSEC, wTime[2], false);
+		SetDlgItemInt(hWnd, BREAKHRS, bTime[0], false);
+		SetDlgItemInt(hWnd, BREAKMIN, bTime[1], false);
+		SetDlgItemInt(hWnd, BREAKSEC, bTime[2], false);	
 		return false;
+	}
 
 	input >> wTime[0];
 	input.ignore(10, '|');
@@ -441,8 +449,7 @@ BOOL LoadFile(HWND hWnd)
 	input.ignore(10, '|');
 	input >> bTime[1];
 	input.ignore(10, '|');
-	input >> bTime[2];
-	
+	input >> bTime[2];	
 
 	SetDlgItemInt(hWnd, WORKHRS, wTime[0], false);
 	SetDlgItemInt(hWnd, WORKMIN, wTime[1], false);
