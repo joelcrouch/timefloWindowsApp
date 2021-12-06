@@ -9,6 +9,8 @@
 #include "Resource.h"
 #pragma comment(lib, "comctl32.lib")
 #include "Winuser.h"
+#include "gdiplus.h"
+#pragma comment(lib, "gdiplus")
 
 //IDs
 #define MAX_LOADSTRING 100
@@ -54,6 +56,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
+	//Initilize GDI+ to paint graphics to UI
+	using namespace Gdiplus;
+	ULONG_PTR gdiplusToken;
+	GdiplusStartupInput gdiplusInput;
+	GdiplusStartup(&gdiplusToken, &gdiplusInput, NULL);
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -65,6 +72,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         return FALSE;
     }
+	
+	
 
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_TIMEFLOPROJECT));
 
@@ -80,7 +89,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
-
+	GdiplusShutdown(gdiplusToken);
     return (int) msg.wParam;
 }
 
@@ -130,7 +139,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    InitCommonControls();
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
-   
+
+
    //Start Button Contained within 
    
 	   HWND hwndStartButton = CreateWindow(L"BUTTON", L"START", WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON | BS_PUSHBUTTON, 200,500,60,20,hWnd,(HMENU) START,(HINSTANCE)GetWindowLongPtr(hWnd, GWLP_HINSTANCE),NULL);
@@ -174,6 +184,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    //Adds a button to display a quick tutorial on how to use the program
    CreateWindow(TEXT("BUTTON"), TEXT("HOW TO USE"), WS_CHILD| WS_VISIBLE, 160, 0, 160, 20, hWnd, (HMENU)TUTORIAL, NULL, NULL);
+  
 
    if (!hWnd)
    {
@@ -273,12 +284,39 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY: // case for when the program is exited unexpectedly, or the X button is clicked
         PostQuitMessage(0);
         break;
+	case WM_PAINT:
+	{
+
+		using namespace Gdiplus;
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		void draw(HDC hdc);
+		draw(hdc);
+		EndPaint(hWnd, &ps);
+		break;
+	}
+	
     default:
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
     return 0;
 }
+void draw(HDC hdc)
+{
+	using namespace Gdiplus;
+	Graphics gf(hdc);
+	Pen pen(Color(255, 0, 0, 0));
+	SolidBrush greenBrush(Color(255, 0, 255, 0));
+	SolidBrush redBrush(Color(255, 255, 0, 0));
+	SolidBrush yellowBrush(Color(255, 255, 165, 0));
 
+	gf.DrawRectangle(&pen, 190, 490, 510, 40);
+	gf.DrawRectangle(&pen, 590, 10, 180, 180);
+
+	gf.FillEllipse(&greenBrush, 270, 500, 20, 20);
+	gf.FillEllipse(&yellowBrush, 470, 500, 20, 20);
+	gf.FillEllipse(&redBrush, 670, 500, 20, 20);
+}
 // Message handler for about box.
 INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 { //probably removable, placed in file by IDE project initialization
