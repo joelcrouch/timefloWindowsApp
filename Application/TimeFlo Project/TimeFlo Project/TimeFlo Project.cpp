@@ -28,6 +28,7 @@
 #define WORKBAR 1012
 #define BREAKBAR 1013
 #define TUTORIAL 1014
+#define CLOCK 1015
 
 
 // Global Variables:
@@ -37,6 +38,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 UINT TicksRemaining = 0;						// Remaining number of 1 second timer ticks needed
 BOOL BreakFlag = false;							// flag for break period, true = break period should be set next
 BOOL PauseFlag = false; 						// flag for when the timer is paused, the timer must be killed in order to stop it from ticking
+std::string fileName = "settings.txt";          // default name of the settings.txt file that is found in the TimeFlo project folder
 
 // Forward declarations of functions included in this code module:
 ATOM                WindowClass(HINSTANCE hInstance);
@@ -46,6 +48,8 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 BOOL				TimerStart(HWND hWnd);
 VOID 				TickHandler(HWND hWnd);
 BOOL				NotifyUser(HWND hWnd);
+BOOL                LoadFile(HWND hWnd);
+BOOL                WriteFile(HWND hWnd);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -61,6 +65,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	ULONG_PTR gdiplusToken;
 	GdiplusStartupInput gdiplusInput;
 	GdiplusStartup(&gdiplusToken, &gdiplusInput, NULL);
+
+	
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -186,11 +192,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    CreateWindow(TEXT("BUTTON"), TEXT("HOW TO USE"), WS_CHILD| WS_VISIBLE, 160, 0, 160, 20, hWnd, (HMENU)TUTORIAL, NULL, NULL);
   
 
+   CreateWindow(TEXT("STATIC"), TEXT("00:00:00"), SS_CENTER | WS_CHILD | WS_VISIBLE, 450, 250, 100, 20, hWnd, (HMENU)CLOCK, NULL, NULL);
+
    if (!hWnd)
    {
       return FALSE;
    }
-
+   if(!LoadFile(hWnd))
+   { 
+	   // create a popup to signal failed load
+   }
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -282,6 +293,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY: // case for when the program is exited unexpectedly, or the X button is clicked
+		
+		if (!WriteFile(hWnd)) // saves settings to file
+		{
+			// create a popup if this fails
+		}
         PostQuitMessage(0);
         break;
 	case WM_PAINT://case to paint to window
@@ -346,15 +362,20 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 BOOL TimerStart(HWND hWnd)
 {
+
 //get edit box values	
 	UINT wTime[3];
 	UINT bTime[3]; //probably optimizable, for loop at a minimum
+
 	wTime[0] = GetDlgItemInt(hWnd, WORKHRS, NULL, false);
 	wTime[1] = GetDlgItemInt(hWnd, WORKMIN, NULL, false);
 	wTime[2] = GetDlgItemInt(hWnd, WORKSEC, NULL, false);
 	bTime[0] = GetDlgItemInt(hWnd, BREAKHRS, NULL, false);
 	bTime[1] = GetDlgItemInt(hWnd, BREAKMIN, NULL, false);
 	bTime[2] = GetDlgItemInt(hWnd, BREAKSEC, NULL, false);
+
+	// 
+
 	if (BreakFlag)
 	{
 		//if the break is next, set the break timer
@@ -383,6 +404,27 @@ VOID TickHandler(HWND hWnd)
 {
 	//decrease the number of remaining ticks
 	TicksRemaining--;
+	//update the clock timer
+	UINT MinutesRemaining = (TicksRemaining / 60);
+	UINT HoursRemaining = (MinutesRemaining / 60);
+	tm* time = new tm();
+	time->tm_hour = HoursRemaining;
+	time->tm_min = MinutesRemaining % 60;
+	time->tm_sec = TicksRemaining % 60;
+	size_t strsize = 40;
+	char* ClockString = new char[strsize];
+	std::strftime(ClockString, strsize, "%T", time);
+	wchar_t* wClockString = new wchar_t[strsize];
+	mbstowcs_s(NULL, wClockString, strsize, ClockString, strsize);
+
+	SetWindowText(GetDlgItem(hWnd, CLOCK), (LPCWSTR)wClockString);
+
+	
+	//SetWindowText(GetDlgItem(hWnd, CLOCK), );
+
+
+	//StringCbPrintf(ClockText, HoursRemaining + " : " + MinutesRemaining % 60 + " : " TicksRemaining % 60 );
+	
 	switch (BreakFlag)
 	{
 	case true: //if the work period is running, change the work bar
@@ -402,7 +444,6 @@ VOID TickHandler(HWND hWnd)
 			case false:
 				break;
 		}
-		
 	}
 	return;
 }
@@ -433,4 +474,82 @@ BOOL NotifyUser(HWND hWnd)
 	}
 	
 	return false;
+}
+
+
+//Function: LoadFile(HWND)
+//
+//
+//Purpose: When a window is instantiated, check to see if there are timer settings saved in a file
+//         otherwise, set values to 0.
+BOOL LoadFile(HWND hWnd)
+{
+	UINT wTime[3] {0,0,0};
+	UINT bTime[3] {0,0,0};
+
+	std::ifstream input;
+	input.open(fileName);
+	if (!input)
+	{
+		SetDlgItemInt(hWnd, WORKHRS, wTime[0], false);
+		SetDlgItemInt(hWnd, WORKMIN, wTime[1], false);
+		SetDlgItemInt(hWnd, WORKSEC, wTime[2], false);
+		SetDlgItemInt(hWnd, BREAKHRS, bTime[0], false);
+		SetDlgItemInt(hWnd, BREAKMIN, bTime[1], false);
+		SetDlgItemInt(hWnd, BREAKSEC, bTime[2], false);	
+		return false;
+	}
+
+	input >> wTime[0];
+	input.ignore(10, '|');
+	input >> wTime[1];
+	input.ignore(10, '|');
+	input >> wTime[2];
+	input.ignore(10, '|');
+	input >> bTime[0];
+	input.ignore(10, '|');
+	input >> bTime[1];
+	input.ignore(10, '|');
+	input >> bTime[2];	
+
+	SetDlgItemInt(hWnd, WORKHRS, wTime[0], false);
+	SetDlgItemInt(hWnd, WORKMIN, wTime[1], false);
+	SetDlgItemInt(hWnd, WORKSEC, wTime[2], false);
+	SetDlgItemInt(hWnd, BREAKHRS, bTime[0], false);
+	SetDlgItemInt(hWnd, BREAKMIN, bTime[1], false);
+	SetDlgItemInt(hWnd, BREAKSEC, bTime[2], false);
+
+	input.close();
+
+	return true;
+}
+
+//Function: WriteFile(HWND)
+//
+//
+//Purpose: When program is terminated, save timer settings to 'settings.txt'
+BOOL WriteFile(HWND hWnd)
+{
+	UINT wTime[3];
+	UINT bTime[3];
+	std::ofstream output;
+
+	output.open(fileName);
+
+	if (!output)
+		return false;
+
+	wTime[0] = GetDlgItemInt(hWnd, WORKHRS, NULL, false);
+	wTime[1] = GetDlgItemInt(hWnd, WORKMIN, NULL, false);
+	wTime[2] = GetDlgItemInt(hWnd, WORKSEC, NULL, false);
+	bTime[0] = GetDlgItemInt(hWnd, BREAKHRS, NULL, false);
+	bTime[1] = GetDlgItemInt(hWnd, BREAKMIN, NULL, false);
+	bTime[2] = GetDlgItemInt(hWnd, BREAKSEC, NULL, false);
+
+	output << wTime[0] << "|" << wTime[1] << "|" << wTime[2] << "|"
+		   << bTime[0] << "|" << bTime[1] << "|" << bTime[2];
+
+	output.close();
+
+	return true;
 }
