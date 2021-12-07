@@ -9,7 +9,6 @@
 #include "Resource.h"
 #pragma comment(lib, "comctl32.lib")
 #include "Winuser.h"
-#include <ctime>
 
 //IDs
 #define MAX_LOADSTRING 100
@@ -37,6 +36,7 @@ WCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 UINT TicksRemaining = 0;						// Remaining number of 1 second timer ticks needed
 BOOL BreakFlag = false;							// flag for break period, true = break period should be set next
 BOOL PauseFlag = false; 						// flag for when the timer is paused, the timer must be killed in order to stop it from ticking
+std::string fileName = "settings.txt";          // default name of the settings.txt file that is found in the TimeFlo project folder
 
 // Forward declarations of functions included in this code module:
 ATOM                WindowClass(HINSTANCE hInstance);
@@ -46,6 +46,8 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 BOOL				TimerStart(HWND hWnd);
 VOID 				TickHandler(HWND hWnd);
 BOOL				NotifyUser(HWND hWnd);
+BOOL                LoadFile(HWND hWnd);
+BOOL                WriteFile(HWND hWnd);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
@@ -56,6 +58,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: Place code here.
+
+	
 
     // Initialize global strings
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -183,7 +187,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    {
       return FALSE;
    }
-
+   if(!LoadFile(hWnd))
+   { 
+	   // create a popup to signal failed load
+   }
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
@@ -275,6 +282,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         }
         break;
     case WM_DESTROY: // case for when the program is exited unexpectedly, or the X button is clicked
+		
+		if (!WriteFile(hWnd)) // saves settings to file
+		{
+			// create a popup if this fails
+		}
         PostQuitMessage(0);
         break;
     default:
@@ -311,15 +323,20 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 BOOL TimerStart(HWND hWnd)
 {
+
 //get edit box values	
 	UINT wTime[3];
 	UINT bTime[3]; //probably optimizable, for loop at a minimum
+
 	wTime[0] = GetDlgItemInt(hWnd, WORKHRS, NULL, false);
 	wTime[1] = GetDlgItemInt(hWnd, WORKMIN, NULL, false);
 	wTime[2] = GetDlgItemInt(hWnd, WORKSEC, NULL, false);
 	bTime[0] = GetDlgItemInt(hWnd, BREAKHRS, NULL, false);
 	bTime[1] = GetDlgItemInt(hWnd, BREAKMIN, NULL, false);
 	bTime[2] = GetDlgItemInt(hWnd, BREAKSEC, NULL, false);
+
+	// 
+
 	if (BreakFlag)
 	{
 		//if the break is next, set the break timer
@@ -388,7 +405,6 @@ VOID TickHandler(HWND hWnd)
 			case false:
 				break;
 		}
-		
 	}
 	return;
 }
@@ -419,4 +435,82 @@ BOOL NotifyUser(HWND hWnd)
 	}
 	
 	return false;
+}
+
+
+//Function: LoadFile(HWND)
+//
+//
+//Purpose: When a window is instantiated, check to see if there are timer settings saved in a file
+//         otherwise, set values to 0.
+BOOL LoadFile(HWND hWnd)
+{
+	UINT wTime[3] {0,0,0};
+	UINT bTime[3] {0,0,0};
+
+	std::ifstream input;
+	input.open(fileName);
+	if (!input)
+	{
+		SetDlgItemInt(hWnd, WORKHRS, wTime[0], false);
+		SetDlgItemInt(hWnd, WORKMIN, wTime[1], false);
+		SetDlgItemInt(hWnd, WORKSEC, wTime[2], false);
+		SetDlgItemInt(hWnd, BREAKHRS, bTime[0], false);
+		SetDlgItemInt(hWnd, BREAKMIN, bTime[1], false);
+		SetDlgItemInt(hWnd, BREAKSEC, bTime[2], false);	
+		return false;
+	}
+
+	input >> wTime[0];
+	input.ignore(10, '|');
+	input >> wTime[1];
+	input.ignore(10, '|');
+	input >> wTime[2];
+	input.ignore(10, '|');
+	input >> bTime[0];
+	input.ignore(10, '|');
+	input >> bTime[1];
+	input.ignore(10, '|');
+	input >> bTime[2];	
+
+	SetDlgItemInt(hWnd, WORKHRS, wTime[0], false);
+	SetDlgItemInt(hWnd, WORKMIN, wTime[1], false);
+	SetDlgItemInt(hWnd, WORKSEC, wTime[2], false);
+	SetDlgItemInt(hWnd, BREAKHRS, bTime[0], false);
+	SetDlgItemInt(hWnd, BREAKMIN, bTime[1], false);
+	SetDlgItemInt(hWnd, BREAKSEC, bTime[2], false);
+
+	input.close();
+
+	return true;
+}
+
+//Function: WriteFile(HWND)
+//
+//
+//Purpose: When program is terminated, save timer settings to 'settings.txt'
+BOOL WriteFile(HWND hWnd)
+{
+	UINT wTime[3];
+	UINT bTime[3];
+	std::ofstream output;
+
+	output.open(fileName);
+
+	if (!output)
+		return false;
+
+	wTime[0] = GetDlgItemInt(hWnd, WORKHRS, NULL, false);
+	wTime[1] = GetDlgItemInt(hWnd, WORKMIN, NULL, false);
+	wTime[2] = GetDlgItemInt(hWnd, WORKSEC, NULL, false);
+	bTime[0] = GetDlgItemInt(hWnd, BREAKHRS, NULL, false);
+	bTime[1] = GetDlgItemInt(hWnd, BREAKMIN, NULL, false);
+	bTime[2] = GetDlgItemInt(hWnd, BREAKSEC, NULL, false);
+
+	output << wTime[0] << "|" << wTime[1] << "|" << wTime[2] << "|"
+		   << bTime[0] << "|" << bTime[1] << "|" << bTime[2];
+
+	output.close();
+
+	return true;
 }
