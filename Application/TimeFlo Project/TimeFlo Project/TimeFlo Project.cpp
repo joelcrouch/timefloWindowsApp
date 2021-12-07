@@ -11,6 +11,9 @@
 #include "Winuser.h"
 #include "gdiplus.h"
 #pragma comment(lib, "gdiplus")
+#include <ctime>
+#include <fstream>
+#include <string>
 
 
 //IDs
