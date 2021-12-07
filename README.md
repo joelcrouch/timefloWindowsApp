@@ -25,7 +25,7 @@ Todo:
 
 Run Instructions:
 * Run project on Windows system only
-* Run .exe file from [TimeFlo/RUNNABLE .EXE FILE(up to date)](https://gitlab.cecs.pdx.edu/jordhyde/TimeFlo/-/blob/main/RUNNABLE%20.EXE%20FILE%20(up%20to%20date)/TimeFlo_Project.exe)
+* Run .exe file from [TimeFlo/RUNNABLE .EXE FILE(up to date)](https://gitlab.cecs.pdx.edu/foxdev/timeflo-windows-team-a/-/blob/main/RUNNABLE%20.EXE%20FILE%20(up%20to%20date)/TimeFlo_Project.exe)
 
 Build Instructions:
 * Add project via HTTPS to visual studios or other windows IDE
