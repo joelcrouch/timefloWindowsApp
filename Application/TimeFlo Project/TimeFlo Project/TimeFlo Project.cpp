@@ -89,7 +89,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
-	GdiplusShutdown(gdiplusToken);
+	GdiplusShutdown(gdiplusToken);//Shuts down the GDI initilized at beginning of main
     return (int) msg.wParam;
 }
 
@@ -284,7 +284,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_DESTROY: // case for when the program is exited unexpectedly, or the X button is clicked
         PostQuitMessage(0);
         break;
-	case WM_PAINT:
+	case WM_PAINT://case to paint to window
 	{
 
 		using namespace Gdiplus;
@@ -301,6 +301,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     }
     return 0;
 }
+//Draws ui elements to a window
 void draw(HDC hdc)
 {
 	using namespace Gdiplus;
@@ -309,10 +310,10 @@ void draw(HDC hdc)
 	SolidBrush greenBrush(Color(255, 0, 255, 0));
 	SolidBrush redBrush(Color(255, 255, 0, 0));
 	SolidBrush yellowBrush(Color(255, 255, 165, 0));
-
+	//Borders
 	gf.DrawRectangle(&pen, 190, 490, 510, 40);
 	gf.DrawRectangle(&pen, 590, 10, 180, 180);
-
+	//Colored circles
 	gf.FillEllipse(&greenBrush, 270, 500, 20, 20);
 	gf.FillEllipse(&yellowBrush, 470, 500, 20, 20);
 	gf.FillEllipse(&redBrush, 670, 500, 20, 20);
