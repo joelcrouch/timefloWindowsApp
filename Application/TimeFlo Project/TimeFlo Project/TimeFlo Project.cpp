@@ -9,6 +9,10 @@
 #include "Resource.h"
 #pragma comment(lib, "comctl32.lib")
 #include "Winuser.h"
+#include <ctime>
+#include <fstream>
+#include <string>
+
 
 //IDs
 #define MAX_LOADSTRING 100
