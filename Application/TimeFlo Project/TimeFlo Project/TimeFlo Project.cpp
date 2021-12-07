@@ -12,6 +12,7 @@
 #include "gdiplus.h"
 #pragma comment(lib, "gdiplus")
 
+
 //IDs
 #define MAX_LOADSTRING 100
 #define START 1001
