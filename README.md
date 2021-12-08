@@ -32,6 +32,10 @@ Run Instructions:
   Use the slider to choose a time beneath their respective time periods, or choose a specific time 
   to the right.  Minutes, seconds, and hours may be selected for the work or rest periods, if the 
   specific time option is used.
+  After the user has chosen times for the work and break periods, the "Start" button will begin the 
+  timer.  
+  The "Pause" button may be used to pause the timer.
+  The "Stop" button stops the timer.
   After the time has completed, a bell and a pop-up will alert the user to the end of the time period.
   The user may opt to use the same time again, if necessary. 
 
