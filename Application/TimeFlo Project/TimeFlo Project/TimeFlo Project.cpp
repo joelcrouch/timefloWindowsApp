@@ -17,6 +17,7 @@
 
 
 //IDs
+#define MAX_TIME 362439
 #define MAX_LOADSTRING 100
 #define START 1001
 #define PAUSE 1002
@@ -411,23 +412,24 @@ VOID TickHandler(HWND hWnd)
 	//update the clock timer
 	UINT MinutesRemaining = (TicksRemaining / 60);
 	UINT HoursRemaining = (MinutesRemaining / 60);
-	tm* time = new tm();
-	time->tm_hour = HoursRemaining;
-	time->tm_min = MinutesRemaining % 60;
-	time->tm_sec = TicksRemaining % 60;
 	size_t strsize = 40;
-	char* ClockString = new char[strsize];
-	std::strftime(ClockString, strsize, "%T", time);
 	wchar_t* wClockString = new wchar_t[strsize];
-	mbstowcs_s(NULL, wClockString, strsize, ClockString, strsize);
+	if (TicksRemaining >= 0 && TicksRemaining <= MAX_TIME) {
+		tm* time = new tm();
+		time->tm_hour = HoursRemaining;
+		time->tm_min = MinutesRemaining % 60;
+		time->tm_sec = TicksRemaining % 60;
+		char* ClockString = new char[strsize];
+		std::strftime(ClockString, strsize, "%T", time);
+
+		mbstowcs_s(NULL, wClockString, strsize, ClockString, strsize);
+		
+	}
+	else {
+		wcscpy_s(wClockString, strsize, L"00:00:00");
+	}
 
 	SetWindowText(GetDlgItem(hWnd, CLOCK), (LPCWSTR)wClockString);
-
-	
-	//SetWindowText(GetDlgItem(hWnd, CLOCK), );
-
-
-	//StringCbPrintf(ClockText, HoursRemaining + " : " + MinutesRemaining % 60 + " : " TicksRemaining % 60 );
 	
 	switch (BreakFlag)
 	{

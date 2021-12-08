@@ -25,7 +25,15 @@ Todo:
 
 Run Instructions:
 * Run project on Windows system only
-* Run .exe file from [TimeFlo/RUNNABLE .EXE FILE(up to date)](https://gitlab.cecs.pdx.edu/jordhyde/TimeFlo/-/blob/main/RUNNABLE%20.EXE%20FILE%20(up%20to%20date)/TimeFlo_Project.exe)
+* Run .exe file from [TimeFlo/RUNNABLE .EXE FILE(up to date)](https://gitlab.cecs.pdx.edu/foxdev/timeflo-windows-team-a/-/blob/main/RUNNABLE%20.EXE%20FILE%20(up%20to%20date)/TimeFlo_Project.exe)
+* After downloading TimeFlo, select the downloaded folder.  A new window will open. There are two 
+  time periods one may choose to use: work and break periods. The work period is used for the amount 
+  of time used on the productive time, and the break time is the amount of time used for a break time.
+  Use the slider to choose a time beneath their respective time periods, or choose a specific time 
+  to the right.  Minutes, seconds, and hours may be selected for the work or rest periods, if the 
+  specific time option is used.
+  After the time has completed, a bell and a pop-up will alert the user to the end of the time period.
+  The user may opt to use the same time again, if necessary. 
 
 Build Instructions:
 * Add project via HTTPS to visual studios or other windows IDE
