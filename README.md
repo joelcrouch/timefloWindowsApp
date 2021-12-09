@@ -9,11 +9,6 @@ This timer will run on windows, it will save user preferences, and will feature 
 
 ## Status and Roadmap
 
-Current Status: Implementation!
-
-Todo:
-
-- validation and verification
 
 * [x] Requirements complete.
 * [x] Project plan complete.
