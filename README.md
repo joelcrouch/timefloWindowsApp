@@ -19,13 +19,12 @@ Todo:
 * [x] Project plan complete.
 * [x] Design complete.
 * [x] Implementation complete.
-* [ ] Validation complete.
+* [x] Validation complete.
 
 ## Build and Run
 
 Run Instructions:
 * Run project on Windows system only
-* Run .exe file from [TimeFlo/RUNNABLE .EXE FILE(up to date)](https://gitlab.cecs.pdx.edu/foxdev/timeflo-windows-team-a/-/blob/main/RUNNABLE%20.EXE%20FILE%20(up%20to%20date)/TimeFlo_Project.exe)
 * After downloading TimeFlo, select the downloaded folder.  A new window will open. There are two 
   time periods one may choose to use: work and break periods. The work period is used for the amount 
   of time used on the productive time, and the break time is the amount of time used for a break time.
