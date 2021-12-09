@@ -1,5 +1,5 @@
 # TimeFlo
-Copyright &copy; 2021 *Jordan Hyde*
+Copyright &copy; 2021 *Jordan Hyde, Devon Fox, Vinh Nguyen, Anteny Erdmand, Joel Crouch*
 
 TimeFlo is an implementation of a
 [Pomodoro&reg;](https://en.wikipedia.org/wiki/Pomodoro_Technique)-like
